@@ -4,12 +4,17 @@ class RedisClient {
   constructor() {
     this.client = createClient();
     this.client.on('error', (err) => {
-      console.log(err.message);
+      console.log(`redis: ${err.message}`);
     });
+    this.connect();
   }
 
   isAlive() {
-    this.client.connected;
+    return this.client.isReady;
+  }
+
+  async connect() {
+    await this.client.connect();
   }
 
   async setex(key, value, duration) {
@@ -40,5 +45,5 @@ class RedisClient {
   }
 }
 
-const redisClient = RedisClient();
-module.exports = redisClient;
+const redisClient = new RedisClient();
+export default redisClient;

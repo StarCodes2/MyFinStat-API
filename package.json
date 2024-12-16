@@ -9,7 +9,7 @@
     "start-server": "nodemon --exec babel-node --presets @babel/preset-env ./app.js",
     "start-worker": "nodemon --exec babel-node --presets @babel/preset-env ./worker.js",
     "dev": "nodemon --exec babel-node --presets @babel/preset-env",
-    "test": "./node_modules/.bin/mocha --require @babel/register --exit" 
+    "test": "./node_modules/.bin/mocha --require @babel/register --exit"
   },
   "author": "Ezekiel Ogunewu",
   "license": "ISC",
@@ -17,9 +17,9 @@
     "bull": "^4.10.3",
     "chai-http": "^4.4.0",
     "express": "^4.18.4",
-    "mongodb": "^5.7.0", 
-    "mongoose": "^7.6.0", 
-    "redis": "^4.6.9", 
+    "mongodb": "^5.7.0",
+    "mongoose": "^7.8.3",
+    "redis": "^4.6.9",
     "sha1": "^1.1.1",
     "uuid": "^9.0.0"
   },
