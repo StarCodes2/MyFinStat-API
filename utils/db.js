@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const Category = require('../models/Category');
+const Transaction = require('../models/Transaction');
 
 class MongooseConnect {
   constructor() {
@@ -25,6 +27,14 @@ class MongooseConnect {
 
   async findUser(filter) {
     return await User.findOne(filter);
+  }
+
+  async getCatesByUserId(userId) {
+    return await Category.find({ userId });
+  }
+
+  async getCateById(userId, id) {
+    return await Category.findOne({ _id: id, userId });
   }
 }
 
