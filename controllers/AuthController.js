@@ -41,24 +41,28 @@ class AuthController {
   static async checkConnection(req, res) {
     const token = req.headers['auth-token'];
     if (!token) {
-      return res.status(401).json({ error: 'Unathorized' });
+      res.status(401).json({ error: 'Unathorized' });
+      return null;
     }
 
     try {
       const userId = await redisClient.get(`auth_${token}`);
       if (!userId) {
-        return res.status(401).json({ error: 'Unathorized' });
+        res.status(401).json({ error: 'Unathorized' });
+        return null;
       }
 
       const user = await dbClient.findUser({ _id: userId });
       if (!user) {
-        return res.status(401).json({ error: 'Unathorized' });
+        res.status(401).json({ error: 'Unathorized' });
+        return null;
       }
 
       return user;
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: 'Internal Server Error' });
+      return null;
     }
   }
 

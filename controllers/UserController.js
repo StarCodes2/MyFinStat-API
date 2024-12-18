@@ -45,7 +45,7 @@ class UserController {
 
   static async getMe(req, res) {
     const user = await AuthController.checkConnection(req, res);
-    if (!user instanceof User) {
+    if (!user) {
       return user;
     }
 
