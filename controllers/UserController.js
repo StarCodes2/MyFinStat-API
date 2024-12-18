@@ -1,5 +1,7 @@
 const sha1 = require('sha1');
 const User = require('../models/User');
+const dbClient = require('../utils/db');
+const AuthController = require('./AuthController');
 
 class UserController {
   static async createUser(req, res) {
@@ -21,14 +23,14 @@ class UserController {
     }
 
     try {
-      const user = User.findUser({ email });
-      if (user) {
+      const userExist = await dbClient.findUser({ email });
+      if (userExist) {
         return res.status(400).json({ error: 'Email already connect to an account' });
       }
 
-      hashedpwd = sha1(password);
+      const hashedpwd = sha1(password);
       const user = new User({
-        name: { firstname, lastname },
+        name: { first: firstname, last: lastname },
         email,
         password: hashedpwd,
       });
@@ -36,7 +38,23 @@ class UserController {
 
       res.status(201).json({ id: user._id, status: 'Account created' });
     } catch (err) {
-      return res.status(500).json('error': 'Internal Server Error');
+      console.error(err);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
+
+  static async getMe(req, res) {
+    const user = await AuthController.checkConnection(req, res);
+    if (!user instanceof User) {
+      return user;
+    }
+
+    return res.status(201).json({
+      id: user._id,
+      name: user.fullname,
+      email: user.email,
+    });
+  }
 }
+
+module.exports = UserController;
