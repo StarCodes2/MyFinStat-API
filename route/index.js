@@ -5,6 +5,7 @@ const express = require('express');
 const dbConnect = require('../utils/db');
 const AuthController = require('../controllers/AuthController');
 const UserController = require('../controllers/UserController');
+const CateController = require('../controllers/CateController');
 
 const route = express.Router();
 
@@ -38,6 +39,14 @@ route.get('/disconnect', async (req, res) => {
 
 route.get('/me', async (req, res) => {
   await UserController.getMe(req, res);
+});
+
+route.post('/category', async (req, res) => {
+  await CateController.createCategory(req, res);
+});
+
+route.get('/category', async (req, res) => {
+  await CateController.getCategories(req, res);
 });
 
 module.exports = route;

@@ -36,6 +36,18 @@ class MongooseConnect {
   async getCateById(userId, id) {
     return await Category.findOne({ _id: id, userId });
   }
+
+  async getCateByName(name) {
+    return await Category.findOne({ name });
+  }
+
+  async getTransByUserId(userId) {
+    return await Transaction.find({ userId });
+  }
+
+  async getTranById(userId, id) {
+    return await Transaction.findOne({ _id: id, userId });
+  }
 }
 
 const dbClient = new MongooseConnect();

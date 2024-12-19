@@ -1,5 +1,6 @@
 const sha1 = require('sha1');
 const User = require('../models/User');
+const Category = require('../models/Category');
 const dbClient = require('../utils/db');
 const AuthController = require('./AuthController');
 
@@ -35,6 +36,12 @@ class UserController {
         password: hashedpwd,
       });
       await user.save();
+      // Add default categories to the database
+      await Category.insertMany([
+        { name: 'Food', userId: user._id },
+        { name: 'Rent', userId: user._id },
+        { name: 'Others', userId: user._id },
+      ]);
 
       res.status(201).json({ id: user._id, status: 'Account created' });
     } catch (err) {
