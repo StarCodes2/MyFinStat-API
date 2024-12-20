@@ -49,4 +49,12 @@ route.get('/category', async (req, res) => {
   await CateController.getCategories(req, res);
 });
 
+route.put('/category', async (req, res) => {
+  await CateController.updateCategory(req, res);
+});
+
+route.delete('/category', async (req, res) => {
+  await CateController.deleteCategory(req, res);
+});
+
 module.exports = route;

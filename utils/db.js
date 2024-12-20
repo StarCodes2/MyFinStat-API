@@ -41,6 +41,10 @@ class MongooseConnect {
     return await Category.findOne({ name });
   }
 
+  async deleteCate(id) {
+    return await Category.deleteOne({ _id: id });
+  }
+
   async getTransByUserId(userId) {
     return await Transaction.find({ userId });
   }

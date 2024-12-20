@@ -28,12 +28,40 @@ class CateController {
     const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
 
-    const cates = await dbClient.getCatesByUserId(user._id);
-    if (!cates.length) {
-      return res.status(404).json({ error: 'No Categories' });
-    }
+    try {
+      const cates = await dbClient.getCatesByUserId(user._id);
+      if (!cates.length) {
+        return res.status(404).json({ error: 'No Categories' });
+      }
 
-    return res.status(201).json(cates);
+      return res.status(201).json(cates);
+    } catch (err) {
+      console.error(err);
+      return res.static(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
+  static async updateCategory(req, res) {
+    const user = await AuthController.checkConnection(req, res);
+    if (!user) return user;
+    const { id } = req.body;
+
+    return null;
+  }
+
+  static async delCategory(req, res) {
+    const user = await AuthController.checkConnection(req, res);
+    if (!user) return user;
+    const { id } = req.body;
+
+    try {
+      await dbClient.deleteCate(id);
+
+      return res.static(204).json({ status: 'Deleted' });
+    } catch (err) {
+      console.error(err);
+      return res.static(500).json({ error: 'Internal Server Error' });
+    }
   }
 }
 
