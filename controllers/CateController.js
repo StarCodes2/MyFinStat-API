@@ -44,9 +44,22 @@ class CateController {
   static async updateCategory(req, res) {
     const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
-    const { id } = req.body;
+    const { id, name } = req.body;
+    if (!id) {
+      return res.status(400).json({ error: 'Missing category id' });
+    }
 
-    return null;
+    if (!name) {
+      return res.status(400).json({ error: 'Missing category name' });
+    }
+
+    try {
+      await dbClient.updateCate(id, name);
+      return res.status(200).json({ status: 'Updated' });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
 
   static async delCategory(req, res) {
