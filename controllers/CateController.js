@@ -44,17 +44,18 @@ class CateController {
   static async updateCategory(req, res) {
     const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
-    const { id, name } = req.body;
-    if (!id) {
+    const { cateId } = req.params;
+    if (!cateId) {
       return res.status(400).json({ error: 'Missing category id' });
     }
 
+    const { name } = req.body;
     if (!name) {
       return res.status(400).json({ error: 'Missing category name' });
     }
 
     try {
-      await dbClient.updateCate(id, name);
+      await dbClient.updateCate(cateId, name);
       return res.status(200).json({ status: 'Updated' });
     } catch (err) {
       console.error(err);
@@ -62,18 +63,21 @@ class CateController {
     }
   }
 
-  static async delCategory(req, res) {
+  static async deleteCategory(req, res) {
     const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
-    const { id } = req.body;
+    const { cateId } = req.params;
+    if (!cateId) {
+      return res.status(400).json({ error: 'Missing category id' });
+    }
 
     try {
-      await dbClient.deleteCate(id);
+      await dbClient.deleteCate(user._id.toString(), cateId);
 
-      return res.static(204).json({ status: 'Deleted' });
+      return res.status(200).json({ status: 'Deleted' });
     } catch (err) {
       console.error(err);
-      return res.static(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 }
