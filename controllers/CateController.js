@@ -1,4 +1,4 @@
-const AuthController = require('../controllers/AuthController');
+const AuthController = require('./AuthController');
 const Category = require('../models/Category');
 const dbClient = require('../utils/db');
 
@@ -9,7 +9,7 @@ class CateController {
     const { name } = req.body;
 
     try {
-      const exist = await dbClient.getCateByName(name);
+      const exist = await dbClient.getCateByName(userId, name);
       if (exist) {
         return res.status(400).json({ error: 'Category already exist' });
       }

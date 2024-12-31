@@ -37,8 +37,8 @@ class MongooseConnect {
     return await Category.findOne({ _id: id, userId });
   }
 
-  async getCateByName(name) {
-    return await Category.findOne({ name });
+  async getCateByName(userId, name) {
+    return await Category.findOne({ userId, name });
   }
 
   async deleteCate(userId, id) {
@@ -50,11 +50,25 @@ class MongooseConnect {
   }
 
   async getTransByUserId(userId) {
-    return await Transaction.find({ userId });
+    return await Transaction.find({ userId }).populate('cateId');
   }
 
   async getTranById(userId, id) {
-    return await Transaction.findOne({ _id: id, userId });
+    return await Transaction.findOne({ _id: id, userId }).populate('cateId');
+  }
+
+  async deleteTran(userId, id) {
+    return await Transaction.deleteOne({ _id: id, userId });
+  }
+
+  async updateTran(filter, values) {
+    const { id, userId } = filter;
+    const { type, amount, cateId } = values;
+
+    return await Transaction.updateOne(
+      { _id: id, userId },
+      { type, amount, cateId },
+    );
   }
 }
 

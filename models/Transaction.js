@@ -8,7 +8,7 @@ const transactionSchema = new Schema({
     enum: ['income', 'expanse', 'savings'],
     require: true
   },
-  categoryId: {
+  cateId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
     require: true,
