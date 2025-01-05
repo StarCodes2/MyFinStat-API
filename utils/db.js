@@ -63,11 +63,11 @@ class MongooseConnect {
 
   async updateTran(filter, values) {
     const { id, userId } = filter;
-    const { type, amount, cateId } = values;
+    const { type, amount, repeat, cateId } = values;
 
     return await Transaction.updateOne(
       { _id: id, userId },
-      { type, amount, cateId },
+      { type, amount, repeat, cateId },
     );
   }
 }

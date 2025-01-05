@@ -71,7 +71,7 @@ route.put('/transaction/:tranId', async (req, res) => {
 });
 
 route.delete('/transaction/:tranId', async (req, res) => {
-  await CateController.deleteCategory(req, res);
+  await TranController.deleteTransaction(req, res);
 });
 
 module.exports = route;

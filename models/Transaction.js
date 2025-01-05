@@ -8,6 +8,12 @@ const transactionSchema = new Schema({
     enum: ['income', 'expanse', 'savings'],
     require: true
   },
+  repeat: {
+    type: String,
+    enum: ['daily', 'weekly', 'monthly', 'quarterly', 'annually'],
+    default: null,
+    require: false,
+  },
   cateId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',

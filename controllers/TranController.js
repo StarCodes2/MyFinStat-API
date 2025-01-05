@@ -48,17 +48,17 @@ class TranController {
     const user = AuthController.checkConnection(req, res);
     if (!user) return user;
 
-    const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    const { tranId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(tranId)) {
       return res.status(400).json({ error: 'Invalid transaction id' });
     }
 
-    let { amount, type, category } = req.body;
+    let { amount, type, category, repeat } = req.body;
     if (!type && !amount && !categroy) {
       return res.status(400).json({ error: 'Fields to be updated missing' });
     }
 
-    const trans = await dbClient.getTranById(user._id, id);
+    const trans = await dbClient.getTranById(user._id, tranId);
     if (!trans) {
       return res.status(404).json({ error: 'Transaction not found' });
     }
@@ -66,11 +66,12 @@ class TranController {
     if (!amount) amount = trans.amount;
     if (!type) type = trans.type;
     if (!category) category = trans.cateId.name;
+    if (!repeat) repeat = trans.repeat;
     if (type !== 'income' || type !== 'expense' || type !== 'savings') {
       return res.status(400).json({ error: 'Type can only be income, expense, or savings' });
     }
-    const values = { amount, type };
-    const filter = { id, userId: user._id };
+    const values = { amount, type, repeat };
+    const filter = { id: tranId, userId: user._id };
 
     try {
       if (category !== trans.cateId.name) {
@@ -86,6 +87,28 @@ class TranController {
 
       return res.status(200).json({ id, status: 'Updated' });
     } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
+  static async deleteTransaction(req, res) {
+    const user = AuthController.checkConnection(req, res);
+    if (!user) return user;
+
+    const { tranId } = req.params;
+    try {
+      if (!mongoose.Types.ObjectId.isValid(tranId)) {
+        return res.status(400).json({ error: 'Invalid transaction id' });
+      }
+
+      const deleted = dbClient.deleteTran(user._id, tranId);
+      if (deleted.deletedCount === 0) {
+        return res.status(404).json({ error: 'Transaction not found' });
+      }
+
+      return res.status(200).json({ status: 'Transaction deleted' });
+    } catch(err) {
       console.error(err);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
