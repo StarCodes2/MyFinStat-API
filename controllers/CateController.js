@@ -1,6 +1,7 @@
 const AuthController = require('./AuthController');
 const Category = require('../models/Category');
 const dbClient = require('../utils/db');
+const Validator = require('../utils/Validator');
 
 class CateController {
   static async createCategory(req, res) {
@@ -49,6 +50,10 @@ class CateController {
       return res.status(400).json({ error: 'Missing category id' });
     }
 
+    if (!Validator.isValidId(cateId)) {
+      return res.status(400).json({ error: 'Invalid category id' });
+    }
+
     const { name } = req.body;
     if (!name) {
       return res.status(400).json({ error: 'Missing category name' });
@@ -69,6 +74,10 @@ class CateController {
     const { cateId } = req.params;
     if (!cateId) {
       return res.status(400).json({ error: 'Missing category id' });
+    }
+
+    if (!Validator.isValidId(cateId)) {
+      return res.status(400).json({ error: 'Invalid category id' });
     }
 
     try {

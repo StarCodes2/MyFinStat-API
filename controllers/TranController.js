@@ -1,7 +1,7 @@
 const AuthController = require('./AuthController');
 const Transaction = require('../models/Transaction');
 const dbClient = require('../utils/db');
-const mongoose = require('mongoose');
+const Validator = require('../utils/Validator');
 
 class TranController {
   static async createTransaction(req, res) {
@@ -31,8 +31,12 @@ class TranController {
     const user = AuthController.checkConnection(req, res);
     if (!user) return user;
 
+    const page = parseInt(req.query.page) || 0;
+    const limit = 50;
+    const skip = page * limit;
+
     try {
-      const trans = await dbClient.getTransByUserId(user._id);
+      const trans = await dbClient.getTransByUserId(user._id, skip, limit);
       if (trans.length === 0) {
         return res.status(404).json({ error: 'No transaction found' });
       }
@@ -52,6 +56,9 @@ class TranController {
     if (!mongoose.Types.ObjectId.isValid(tranId)) {
       return res.status(400).json({ error: 'Invalid transaction id' });
     }
+    if (Validator.isValidId(tranId)) {
+      return res.status(400).json({ error: 'Invalid transaction id' });
+    }
 
     let { amount, type, category, repeat } = req.body;
     if (!type && !amount && !categroy) {
@@ -67,8 +74,14 @@ class TranController {
     if (!type) type = trans.type;
     if (!category) category = trans.cateId.name;
     if (!repeat) repeat = trans.repeat;
-    if (type !== 'income' || type !== 'expense' || type !== 'savings') {
+    if (!Validator.isNumber(amount)) {
+      return res.status(400).json({ error: 'Amount not a valid number' });
+    }
+    if (!Validator.isValidType(type)) {
       return res.status(400).json({ error: 'Type can only be income, expense, or savings' });
+    }
+    if (!Validator.isValidRepeat(repeat)) {
+      return res.status(400).json({ error: 'Repeat can only be daily, weekly, monthly, or yearly' });
     }
     const values = { amount, type, repeat };
     const filter = { id: tranId, userId: user._id };
@@ -97,11 +110,11 @@ class TranController {
     if (!user) return user;
 
     const { tranId } = req.params;
-    try {
-      if (!mongoose.Types.ObjectId.isValid(tranId)) {
-        return res.status(400).json({ error: 'Invalid transaction id' });
-      }
+    if (!Validator.isValidId(tranId)) {
+      return res.status(400).json({ error: 'Invalid transaction id' });
+    }
 
+    try {
       const deleted = dbClient.deleteTran(user._id, tranId);
       if (deleted.deletedCount === 0) {
         return res.status(404).json({ error: 'Transaction not found' });

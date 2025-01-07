@@ -49,8 +49,20 @@ class MongooseConnect {
     return await Category.updateOne({ _id: id }, { name });
   }
 
-  async getTransByUserId(userId) {
-    return await Transaction.find({ userId }).populate('cateId');
+  async getTransByUserId(userId, skip, limit) {
+    return await Transaction.aggregate([
+      { $match: { userId } },
+      {
+        $lookup: {
+	  from: 'Category',
+	  localField: 'cateId',
+	  foreignField: '_id',
+	  as: 'Category',
+	},
+      },
+      { $skip: skip },
+      { $limit: limit }
+    ]);
   }
 
   async getTranById(userId, id) {
@@ -69,6 +81,14 @@ class MongooseConnect {
       { _id: id, userId },
       { type, amount, repeat, cateId },
     );
+  }
+
+  async tranAggregate(match, group) {
+    return await Transaction.aggregate([
+      { $match: match },
+      { $group: group },
+      { $sort: { created_at: -1 } }
+    ]);
   }
 }
 
