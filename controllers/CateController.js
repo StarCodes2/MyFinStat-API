@@ -60,7 +60,7 @@ class CateController {
     }
 
     try {
-      await dbClient.updateCate(cateId, name);
+      await dbClient.updateCate(user._id, cateId, name);
       return res.status(200).json({ status: 'Updated' });
     } catch (err) {
       console.error(err);

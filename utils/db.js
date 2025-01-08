@@ -45,8 +45,8 @@ class MongooseConnect {
     return await Category.deleteOne({ _id: id, userId });
   }
 
-  async updateCate(id, name) {
-    return await Category.updateOne({ _id: id }, { name });
+  async updateCate(userId, id, name) {
+    return await Category.updateOne({ _id: id, userId }, { name });
   }
 
   async getTransByUserId(userId, skip, limit) {
@@ -87,7 +87,7 @@ class MongooseConnect {
     return await Transaction.aggregate([
       { $match: match },
       { $group: group },
-      { $sort: { created_at: -1 } }
+      { $sort: { date: -1 } }
     ]);
   }
 }

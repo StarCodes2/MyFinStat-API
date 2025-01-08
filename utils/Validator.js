@@ -1,3 +1,4 @@
+// Validates user inputs
 const mongoose = require('mongoose');
 
 class Validator {
