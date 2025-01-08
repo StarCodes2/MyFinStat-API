@@ -64,7 +64,27 @@ class ReportController {
         return res.status(404).json({ error: 'Requested report not available' });
       }
 
-      return null;
+      const reports = [];
+      let i = 0;
+      while (i < result.length) {
+        const trans = { [result[i]._id.type]: result[i] };
+        const report = {};
+
+        // Checks if other types have reports for this day
+        if (trans[0]._id.date === result[i + 1]._id.date) {
+	  trans[result[i + 1]._id.type] = result[i + 1];
+	}
+        if (trans[0]._id.date === result[i + 2]._id.date) {
+	  trans[result[i + 2]._id.type] = result[i + 2];
+	}
+
+        // Compute and format the report for a single day
+
+        reports.push(report);
+        i += Object.keys(trans).length;
+      }
+
+      return res.json(reports);
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: 'Internal Server Error' });
