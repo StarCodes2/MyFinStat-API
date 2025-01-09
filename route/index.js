@@ -7,6 +7,7 @@ const AuthController = require('../controllers/AuthController');
 const UserController = require('../controllers/UserController');
 const CateController = require('../controllers/CateController');
 const TranController = require('../controllers/TranController');
+const ReportController = require('../controllers/ReportController');
 
 const route = express.Router();
 
@@ -72,6 +73,17 @@ route.put('/transaction/:tranId', async (req, res) => {
 
 route.delete('/transaction/:tranId', async (req, res) => {
   await TranController.deleteTransaction(req, res);
+});
+
+route.get('/report', async (req, res) => {
+  await ReportController.dailyReport(req, res);
+});
+
+route.get('/report/:period', async (req, res) => {
+  const { period } = req.params;
+  if (period === 'daily') {
+    await ReportController.dailyReport(req, res);
+  }
 });
 
 module.exports = route;
