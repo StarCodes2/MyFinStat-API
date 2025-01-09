@@ -8,7 +8,7 @@ class TranController {
     const user = AuthController.checkConnection(req, res);
     if (!user) return user;
 
-    const { type, amount, category } = req.body;
+    const { type, amount, category, repeat } = req.body;
     if (!type || !amount || !category) {
       return res.status(400).json({ error: 'amount, type, and category are required' });
     }
@@ -53,10 +53,7 @@ class TranController {
     if (!user) return user;
 
     const { tranId } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(tranId)) {
-      return res.status(400).json({ error: 'Invalid transaction id' });
-    }
-    if (Validator.isValidId(tranId)) {
+    if (!Validator.isValidId(tranId)) {
       return res.status(400).json({ error: 'Invalid transaction id' });
     }
 
@@ -83,7 +80,11 @@ class TranController {
     if (!Validator.isValidRepeat(repeat)) {
       return res.status(400).json({ error: 'Repeat can only be daily, weekly, monthly, or yearly' });
     }
-    const values = { amount, type, repeat };
+    const values = {
+      amount,
+      type: type.toLowerCase(),
+      repeat: repeat.toLowerCase(),
+    };
     const filter = { id: tranId, userId: user._id };
 
     try {

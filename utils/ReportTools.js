@@ -55,7 +55,7 @@ class ReportTools {
           report['averageExpense'] = trans['expense'].avg;
 	  report['mostExpensive'] = trans['expense'].max;
 	  report['leastExpensive'] = trans['expense'].min;
-	  date = trans['expense'].date;
+	  date = trans['expense'].minDate;
 	} else {
 	  report['totalExpense'] = report['averageExpense'] = report['mostExpensive'] = report['leastExpensive'] = 0;
 	}
@@ -65,7 +65,7 @@ class ReportTools {
           report['averageIncome'] = trans['income'].avg;
 	  report['highestIncome'] = trans['income'].max;
 	  report['lowestIncome'] = trans['income'].min;
-	  date = trans['income'].date;
+	  date = trans['income'].minDate;
 	} else {
 	  report['totalIncome'] = report['averageIncome'] = report['highestIncome'] = report['lowestIncome'] = 0;
 	}
@@ -75,7 +75,7 @@ class ReportTools {
           report['averageSavings'] = trans['savings'].avg;
 	  report['mostSaved'] = trans['savings'].max;
 	  report['leastSaved'] = trans['savings'].min;
-	  date = trans['savings'].date;
+	  date = trans['savings'].minDate;
 	} else {
 	  report['totalSavings'] = report['averageSavings'] = report['mostSaved'] = report['leastSaved'] = 0;
 	}
