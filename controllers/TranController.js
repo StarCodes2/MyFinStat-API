@@ -5,7 +5,7 @@ const Validator = require('../utils/Validator');
 
 class TranController {
   static async createTransaction(req, res) {
-    const user = AuthController.checkConnection(req, res);
+    const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
 
     const { type, amount, category, repeat } = req.body;
@@ -14,6 +14,12 @@ class TranController {
     }
 
     try {
+      if (repeat && Validator.isValidRepeat(repeat)) {
+        // Add document to repeat table
+      } else if (repeat && !Validator.isValidRepeat(repeat)) {
+        return res.status(400).json({ error: 'Invalid repeat' });
+      }
+
       const cate = await dbClient.getCateByName(user._id, category.toLowerCase());
       if (!cate) return res.status(400).json({ error: 'Category does not exist' });
 
@@ -28,7 +34,7 @@ class TranController {
   }
 
   static async getTransactions(req, res) {
-    const user = AuthController.checkConnection(req, res);
+    const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
 
     const page = parseInt(req.query.page) || 0;
@@ -49,7 +55,7 @@ class TranController {
   }
 
   static async updateTransaction(req, res) {
-    const user = AuthController.checkConnection(req, res);
+    const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
 
     const { tranId } = req.params;
@@ -107,7 +113,7 @@ class TranController {
   }
 
   static async deleteTransaction(req, res) {
-    const user = AuthController.checkConnection(req, res);
+    const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
 
     const { tranId } = req.params;

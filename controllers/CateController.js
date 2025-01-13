@@ -10,12 +10,15 @@ class CateController {
     const { name } = req.body;
 
     try {
-      const exist = await dbClient.getCateByName(userId, name);
+      const exist = await dbClient.getCateByName(user._id, name.toLowerCase());
       if (exist) {
         return res.status(400).json({ error: 'Category already exist' });
       }
 
-      const cate =  new Category({ name, userId: user._id });
+      const cate =  new Category({
+        name: name.toLowerCase(),
+        userId: user._id,
+      });
       await cate.save();
 
       return res.status(201).json({ id: cate._id, status: 'Category Created' });
@@ -60,7 +63,7 @@ class CateController {
     }
 
     try {
-      await dbClient.updateCate(user._id, cateId, name);
+      await dbClient.updateCate(user._id, cateId, name.toLowerCase());
       return res.status(200).json({ status: 'Updated' });
     } catch (err) {
       console.error(err);

@@ -54,10 +54,10 @@ class MongooseConnect {
       { $match: { userId } },
       {
         $lookup: {
-	  from: 'Category',
+	  from: 'categories',
 	  localField: 'cateId',
 	  foreignField: '_id',
-	  as: 'Category',
+	  as: 'category',
 	},
       },
       { $skip: skip },
@@ -66,7 +66,7 @@ class MongooseConnect {
   }
 
   async getTranById(userId, id) {
-    return await Transaction.findOne({ _id: id, userId }).populate('cateId');
+    return await Transaction.findOne({ _id: id, userId }).populate('cateId', 'name').populate('repeat');
   }
 
   async deleteTran(userId, id) {

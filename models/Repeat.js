@@ -1,18 +1,17 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const transactionSchema = new Schema({
+const repeatSchema = new Schema({
   amount: { type: Number, require: true },
   type: {
     type: String,
-    enum: ['income', 'expense', 'savings'],
+    enum: ['income', 'expanse', 'savings'],
     require: true
   },
-  repeatId: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: null,
-    ref: 'Repeat',
-    require: false,
+  repeat: {
+    type: String,
+    enum: ['daily', 'weekly', 'monthly', 'quarterly', 'annually'],
+    require: true,
   },
   cateId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -31,5 +30,5 @@ const transactionSchema = new Schema({
   },
 });
 
-const Transaction = mongoose.model('Transaction', transactionSchema);
-module.exports = Transaction;
+const Repeat = mongoose.model('Repeat', repeatSchema);
+module.exports = Repeat;
