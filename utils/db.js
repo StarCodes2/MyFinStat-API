@@ -61,12 +61,23 @@ class MongooseConnect {
 	},
       },
       { $skip: skip },
-      { $limit: limit }
+      { $limit: limit },
+      {
+        $project: {
+          _id: 1,
+          userId: 1,
+          amount: 1,
+          'category.name': 1,
+          type: 1,
+          repeatId: 1,
+          date: 1,
+        },
+      }
     ]);
   }
 
   async getTranById(userId, id) {
-    return await Transaction.findOne({ _id: id, userId }).populate('cateId', 'name').populate('repeat');
+    return await Transaction.findOne({ _id: id, userId }).populate('cateId');
   }
 
   async deleteTran(userId, id) {
@@ -75,11 +86,10 @@ class MongooseConnect {
 
   async updateTran(filter, values) {
     const { id, userId } = filter;
-    const { type, amount, repeat, cateId } = values;
 
     return await Transaction.updateOne(
       { _id: id, userId },
-      { type, amount, repeat, cateId },
+      values
     );
   }
 

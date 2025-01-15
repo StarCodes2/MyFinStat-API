@@ -22,7 +22,7 @@ class ReportController {
       _id: {
         date: {
           $dateToString: {
-            format: '%y-%m-%d', date: { $min: '$created_at' },
+            format: '%y-%m-%d', date: { $min: '$date' },
 	  },
 	},
         type: '$type',
@@ -31,7 +31,7 @@ class ReportController {
       total: { $sum: '$amount' },
       max: { $max: '$amount' },
       avg: { $avg: '$amount' },
-      minDate: { $min: '$created_at' },
+      minDate: { $min: '$date' },
     };
 
     try {
@@ -57,7 +57,7 @@ class ReportController {
     const dateRange = ReportTools.monthRange(new Date(), false);
     const match = {
       userId: user._id,
-      created_at: {
+      date: {
         $gte: dateRange.startDate,
         $lt: dateRange.currentDate,
       },
@@ -67,7 +67,7 @@ class ReportController {
       _id: {
         date: {
           $dateToString: {
-            format: '%y-%m', date: { $min: '$created_at' },
+            format: '%y-%m', date: { $min: '$date' },
 	  },
 	},
         type: '$type',
@@ -76,7 +76,7 @@ class ReportController {
       total: { $sum: '$amount' },
       max: { $max: '$amount' },
       avg: { $avg: '$amount' },
-      minDate: { $min: '$created_at' },
+      minDate: { $min: '$date' },
     };
 
     try {
