@@ -11,9 +11,13 @@ class ReportTools {
     const currentDay = date.getDate();
     const weekDay = date.getDay();
     const dayOffset = weekStart ? -weekDay : -7;
-    const startDate = new Date(date).setDate(currentDay + dayOffset);
+    const startDate = new Date(date);
+    startDate.setDate(currentDay + dayOffset);
 
-    return { startDate, currentDate: date };
+    return {
+      startDate,
+      currentDate: date
+    };
   }
 
   static monthRange(date, yearStart) {	
@@ -30,7 +34,7 @@ class ReportTools {
     return { startDate, currentDate: date };
   }
 
-  static ComputeReport(result) {
+  static computeReport(result) {
     // Computes and returns the formatted reports for a given query result.
     try {
       const reports = [];
@@ -42,10 +46,10 @@ class ReportTools {
         let date = null;
 
         // Checks if other types have reports for this date
-        if (trans[type]._id.date === result[i + 1]._id.date) {
+        if (result.length > i + 1 && trans[type]._id.date === result[i + 1]._id.date) {
 	  trans[result[i + 1]._id.type] = result[i + 1];
 	}
-        if (trans[type]._id.date === result[i + 2]._id.date) {
+        if (result.length > i + 2 && trans[type]._id.date === result[i + 2]._id.date) {
 	  trans[result[i + 2]._id.type] = result[i + 2];
 	}
 

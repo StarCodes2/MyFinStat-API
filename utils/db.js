@@ -97,7 +97,7 @@ class MongooseConnect {
     return await Transaction.aggregate([
       { $match: match },
       { $group: group },
-      { $sort: { date: -1 } }
+      { $sort: { minDate: -1 } }
     ]);
   }
 }

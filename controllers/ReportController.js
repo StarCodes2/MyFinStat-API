@@ -6,13 +6,13 @@ const ReportTools = require('../utils/ReportTools');
 class ReportController {
   static async dailyReport(req, res) {
     // Returns the daily reports for the last 7 days.
-    const user = AuthController.checkConnection(req, res);
+    const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
 
     const dateRange = ReportTools.dayRange(new Date(), false);
     const match = {
       userId: user._id,
-      created_at: {
+      date: {
         $gte: dateRange.startDate,
         $lt: dateRange.currentDate,
       },
@@ -22,7 +22,7 @@ class ReportController {
       _id: {
         date: {
           $dateToString: {
-            format: '%y-%m-%d', date: { $min: '$date' },
+            format: '%Y-%m-%d', date: { $min: '$date' },
 	  },
 	},
         type: '$type',
@@ -51,7 +51,7 @@ class ReportController {
 
   static async monthlyReport(req, res) {
     // Returns the daily reports for the last 7 days.
-    const user = AuthController.checkConnection(req, res);
+    const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
 
     const dateRange = ReportTools.monthRange(new Date(), false);
@@ -67,7 +67,7 @@ class ReportController {
       _id: {
         date: {
           $dateToString: {
-            format: '%y-%m', date: { $min: '$date' },
+            format: '%Y-%m', date: { $min: '$date' },
 	  },
 	},
         type: '$type',
