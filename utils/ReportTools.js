@@ -13,6 +13,7 @@ class ReportTools {
     const dayOffset = weekStart ? -weekDay : -7;
     const startDate = new Date(date);
     startDate.setDate(currentDay + dayOffset);
+    startDate.setHours(0, 0, 0, 0);
 
     return {
       startDate,
@@ -29,7 +30,24 @@ class ReportTools {
 
     const currentMonth = date.getMonth();
     const month = yearStart ? 0 : currentMonth - 12;
-    const startDate = new Date(date).setMonth(month, 1);
+    const startDate = new Date(date);
+    startDate.setMonth(month, 1);
+    startDate.setHours(0, 0, 0, 0);
+
+    return { startDate, currentDate: date };
+  }
+
+  static yearRange(date, numOfYears) {
+    // Returns the timestamp for the first and last year in a range
+    if (!date instanceof Date || typeof numOfYears !== 'number') {
+      return null;
+    }
+
+    const currentYear = date.getFullYear();
+    const startDate = new Date(date);
+    startDate.setFullYear(currentYear - numOfYears);
+    startDate.setMonth(0, 1);
+    startDate.setHours(0, 0, 0, 0);
 
     return { startDate, currentDate: date };
   }
@@ -92,6 +110,7 @@ class ReportTools {
         report['date'] = date
 
         reports.push(report);
+        // To skip the array elements that where check in this iteration
         i += Object.keys(trans).length;
       }
 

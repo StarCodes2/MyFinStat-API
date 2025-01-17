@@ -83,6 +83,10 @@ route.get('/report/:period', async (req, res) => {
   const { period } = req.params;
   if (period === 'daily') {
     await ReportController.dailyReport(req, res);
+  } else if (period === 'monthly') {
+    await ReportController.monthlyReport(req, res);
+  } else if (period === 'yearly') {
+    await ReportController.annualReport(req, res);
   }
 });
 
