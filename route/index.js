@@ -76,17 +76,19 @@ route.delete('/transaction/:tranId', async (req, res) => {
 });
 
 route.get('/report', async (req, res) => {
-  await ReportController.dailyReport(req, res);
+  await ReportController.regularReport(req, res);
 });
 
 route.get('/report/:period', async (req, res) => {
   const { period } = req.params;
-  if (period === 'daily') {
-    await ReportController.dailyReport(req, res);
-  } else if (period === 'monthly') {
-    await ReportController.monthlyReport(req, res);
-  } else if (period === 'yearly') {
-    await ReportController.annualReport(req, res);
+  if (period === 'daily' || period === 'monthly' || period === 'yearly') {
+    await ReportController.regularReport(req, res);
+  } else if (period === 'weekly') {
+    await ReportController.weeklyReport(req, res);
+  } else if (period === 'quarterly') {
+    await ReportController.quarterlyReport(req, res);
+  } else {
+    res.status(400).json({ error: 'Invalid link parameter' });
   }
 });
 
