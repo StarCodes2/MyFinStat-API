@@ -114,7 +114,6 @@ class ReportController {
         return res.status(404).json({ error: 'Requested report not available' });
       }
 
-      console.log(result);
       // Get an array of reports for each week
       const reports = ReportTools.computeReport(result);
 
