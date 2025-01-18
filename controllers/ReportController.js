@@ -82,13 +82,19 @@ class ReportController {
       },
     };
 
+    const addField = {
+      week: {
+        $concat: [
+          { $substr: [{ $year: '$date' }, 0, 4] },
+          '-W',
+          { $substr: [{ $isoWeek: '$date' }, 0, 2] }
+        ],
+      },
+    };
+
     const group = {
       _id: {
-        date: {
-          $dateToString: {
-            format: '%Y-%m-%d', date: { $min: '$date' },
-	  },
-	},
+        date: '$week',
         type: '$type',
       },
       count: { $sum: 1 },
@@ -101,13 +107,15 @@ class ReportController {
     try {
       const result = await dbClient.tranAggregate({
         match,
+        addField,
         group,
       });
       if (result.length === 0) {
         return res.status(404).json({ error: 'Requested report not available' });
       }
 
-      // Get an array of reports for each day
+      console.log(result);
+      // Get an array of reports for each week
       const reports = ReportTools.computeReport(result);
 
       return res.json(reports);
@@ -171,7 +179,7 @@ class ReportController {
         return res.status(404).json({ error: 'Requested report not available' });
       }
 
-      // Get an array of reports for each month
+      // Get an array of reports for each quarter
       const reports = ReportTools.computeReport(result);
 
       return res.json(reports);
