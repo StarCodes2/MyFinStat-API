@@ -93,12 +93,21 @@ class MongooseConnect {
     );
   }
 
-  async tranAggregate(match, group) {
-    return await Transaction.aggregate([
-      { $match: match },
-      { $group: group },
-      { $sort: { minDate: -1 } }
-    ]);
+  async tranAggregate(steps) {
+    if ('addField' in steps) {
+      return await Transaction.aggregate([
+        { $match: steps.match },
+        { $addFields: steps.addField },
+        { $group: steps.group },
+        { $sort: { minDate: -1 } }
+      ]);
+    } else {
+      return await Transaction.aggregate([
+        { $match: steps.match },
+        { $group: steps.group },
+        { $sort: { minDate: -1 } }
+      ]);
+    }
   }
 }
 

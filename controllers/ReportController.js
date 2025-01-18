@@ -49,7 +49,10 @@ class ReportController {
     };
 
     try {
-      const result = await dbClient.tranAggregate(match, group);
+      const result = await dbClient.tranAggregate({
+        match,
+        group,
+      });
       if (result.length === 0) {
         return res.status(404).json({ error: 'Requested report not available' });
       }
@@ -96,7 +99,10 @@ class ReportController {
     };
 
     try {
-      const result = await dbClient.tranAggregate(match, group);
+      const result = await dbClient.tranAggregate({
+        match,
+        group,
+      });
       if (result.length === 0) {
         return res.status(404).json({ error: 'Requested report not available' });
       }
@@ -126,13 +132,26 @@ class ReportController {
       },
     };
 
+    // Add field to mark data by quarter
+    const addField = {
+      quarter: {
+        $concat: [
+          { $substr: [{ $year: '$date' }, 0, 4] },
+          '-Q',
+          {
+            $substr: [{
+              $ceil: {
+                $divide: [{ $month: '$date' }, 3],
+              },
+            }, 0, 1]
+          },
+        ],
+      },
+    };
+
     const group = {
       _id: {
-        date: {
-          $dateToString: {
-            format: '%Y-%m', date: { $min: '$date' },
-	  },
-	},
+        date: '$quarter',
         type: '$type',
       },
       count: { $sum: 1 },
@@ -143,7 +162,11 @@ class ReportController {
     };
 
     try {
-      const result = await dbClient.tranAggregate(match, group);
+      const result = await dbClient.tranAggregate({
+        match,
+        addField,
+        group,
+      });
       if (result.length === 0) {
         return res.status(404).json({ error: 'Requested report not available' });
       }
