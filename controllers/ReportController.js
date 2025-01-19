@@ -82,10 +82,11 @@ class ReportController {
       },
     };
 
+    // Add field to mark data by week
     const addField = {
       week: {
         $concat: [
-          { $substr: [{ $year: '$date' }, 0, 4] },
+          { $substr: [{ $isoWeekYear: '$date' }, 0, 4] },
           '-W',
           { $substr: [{ $isoWeek: '$date' }, 0, 2] }
         ],
