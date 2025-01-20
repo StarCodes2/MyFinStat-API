@@ -13,6 +13,10 @@ const repeatSchema = new Schema({
     enum: ['daily', 'weekly', 'monthly', 'quarterly', 'annually'],
     require: true,
   },
+  jobKey: {
+    type: String,
+    require: true,
+  },
   cateId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',

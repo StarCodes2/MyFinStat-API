@@ -2,6 +2,7 @@ const AuthController = require('./AuthController');
 const Transaction = require('../models/Transaction');
 const dbClient = require('../utils/db');
 const Validator = require('../utils/Validator');
+const repeatQueue = require('../worker');
 
 class TranController {
   static async createTransaction(req, res) {
@@ -12,19 +13,36 @@ class TranController {
     if (!type || !amount || !category) {
       return res.status(400).json({ error: 'amount, type, and category are required' });
     }
+    if (!Validator.isValidType(type)) {
+      res.status(400).json({ error: 'Invalid type' });
+    }
+    const data = {
+      amount,
+      type,
+      userId: user._id,
+    };
 
     try {
+      const cate = await dbClient.getCateByName(user._id, category.toLowerCase());
+      if (!cate) return res.status(400).json({ error: 'Category does not exist' });
+      data.cateId = cate._id;
+
       if (repeat && Validator.isValidRepeat(repeat)) {
-        // Add document to repeat table
+        data.repeat = repeat;
+        let cron = null;
+	if (repeat === 'daily') cron = '0 0 * * *';
+        if (repeat === 'weekly') cron = '0 0 * * 1';
+	if (repeat === 'monthly') cron = '0 0 1 * *';
+        if (repeat === 'yearly') cron = '0 0 1 1 *';
+
+        const job = repeatQueue.add(data, { repeat: { cron } });
+        data.jobKey = job.opts.repeat.key;
       } else if (repeat && !Validator.isValidRepeat(repeat)) {
         return res.status(400).json({ error: 'Invalid repeat' });
       }
 
-      const cate = await dbClient.getCateByName(user._id, category.toLowerCase());
-      if (!cate) return res.status(400).json({ error: 'Category does not exist' });
-
-      const trans = new Transaction({ amount, type, cateId: cate._id, userId: user._id });
-      trans.save();
+      const trans = new Transaction(data);
+      await trans.save();
 
       return res.status(201).json({ status: 'Created', id: trans._id });
     } catch (err) {

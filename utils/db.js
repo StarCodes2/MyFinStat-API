@@ -69,7 +69,8 @@ class MongooseConnect {
           amount: 1,
           'category.name': 1,
           type: 1,
-          repeatId: 1,
+          repeat: 1,
+          jobKey,
           date: 1,
         },
       }

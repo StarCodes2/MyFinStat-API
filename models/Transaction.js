@@ -8,10 +8,14 @@ const transactionSchema = new Schema({
     enum: ['income', 'expense', 'savings'],
     require: true
   },
-  repeatId: {
-    type: mongoose.Schema.Types.ObjectId,
+  repeat: {
+    type: String,
     default: null,
-    ref: 'Repeat',
+    require: false,
+  },
+  jobKey: {
+    type: String,
+    default: null,
     require: false,
   },
   cateId: {
