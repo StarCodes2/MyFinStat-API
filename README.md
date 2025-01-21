@@ -3,14 +3,16 @@
 MyFinStat is a personal finance tracker API designed to help users manage their income, expenses, and budgets efficiently. With powerful tools for transaction tracking and insightful reports, it simplifies financial management for everyone.
 
 ## Table of Contents  
-- [Features](#features)  
-- [Installation](#installation)  
-- [Usage](#usage)  
-- [API Endpoints](#api-endpoints)  
-- [Technologies Used](#technologies-used)  
-- [Project Structure](#project-structure)  
-- [Contributing](#contributing)  
-- [License](#license)
+1. [Features](#features)
+2. [Getting Started](gettting-started)
+  - [Installation](#installation)
+3. [Usage](#usage)  
+4. [API Endpoints](#api-endpoints)  
+5. [Technologies Used](#technologies-used)  
+6. [Project Structure](#project-structure)  
+7. [Contributing](#contributing)  
+8. [License](#license)
+9. [Author](#author)
 
 ## Features  
 
@@ -44,7 +46,7 @@ MyFinStat is a personal finance tracker API designed to help users manage their 
 ### 7. **Open for Expansion**
 - Modular architecture allows for seamless addition of new features like spending alerts, transactions filtering, or third-party API integration (e.g., currency conversion).
 
-## Installation  
+## Getting Started 
 
 Follow these steps to set up and run the **MyFinStat API** on your local machine.
 
@@ -54,7 +56,7 @@ Ensure you have the following installed:
 - [MongoDB](https://www.mongodb.com/) (local or cloud instance)  
 - [Redis](https://redis.io/)  
 
-### Steps  
+### Installation 
 
 #### 1. **Clone the Repository**  
 Clone the repository from GitHub to your local machine:  
@@ -350,7 +352,6 @@ http://localhost:5000
 
 This **Usage** section covers all the endpoints and their functionality, ensuring that you can efficiently test and interact with the **MyFinStat API**.
 
----
 
 ## Technologies Used  
 
@@ -366,7 +367,6 @@ The **MyFinStat API** leverages the following technologies and tools:
 - **ESLint**: Linting utility to enforce code quality and consistency.  
 - **Mocha/Chai**: Testing framework and assertion library for API and functional tests.  
 
----
 
 ## Project Structure  
 
@@ -402,7 +402,6 @@ MyFinStat-API/
 ├── README.md                 # Project documentation
 ```
 
----
 
 ## Contributing  
 
@@ -450,7 +449,6 @@ Contributions are welcome, and they are greatly appreciated! To contribute to **
    - Go to the original repository on GitHub and open a pull request.  
    - Provide a clear description of the changes you’ve made and the purpose of the pull request.  
 
----
 
 ## License  
 
@@ -462,7 +460,6 @@ Permission to use, copy, modify, and/or distribute this software for any purpose
 
 THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
----
 
 ## Author  
 
