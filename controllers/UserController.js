@@ -6,21 +6,12 @@ const AuthController = require('./AuthController');
 
 class UserController {
   static async createUser(req, res) {
-    const { firstname, lastname, email, password } = req.body;
+    const {
+      firstname, lastname, email, password,
+    } = req.body;
 
-    if (!email) {
-      return res.status(400).json({ error: 'Missing email' });
-    }
-    if (!password) {
-      return res.status(400).json({ error: 'Missing password' });
-    }
-
-    if (!firstname) {
-      return res.status(400).json({ error: 'Missing firstname' });
-    }
-
-    if (!lastname) {
-      return res.status(400).json({ error: 'Missing lastname' });
+    if (!email || !password || !firstname || !lastname) {
+      return res.status(400).json({ error: 'Email, Password, Firstname, and Lastname are required' });
     }
 
     try {

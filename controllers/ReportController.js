@@ -37,8 +37,8 @@ class ReportController {
         date: {
           $dateToString: {
             format: dFormat, date: { $min: '$date' },
-	  },
-	},
+          },
+        },
         type: '$type',
       },
       count: { $sum: 1 },
@@ -88,7 +88,7 @@ class ReportController {
         $concat: [
           { $substr: [{ $isoWeekYear: '$date' }, 0, 4] },
           '-W',
-          { $substr: [{ $isoWeek: '$date' }, 0, 2] }
+          { $substr: [{ $isoWeek: '$date' }, 0, 2] },
         ],
       },
     };
@@ -151,7 +151,7 @@ class ReportController {
               $ceil: {
                 $divide: [{ $month: '$date' }, 3],
               },
-            }, 0, 1]
+            }, 0, 1],
           },
         ],
       },

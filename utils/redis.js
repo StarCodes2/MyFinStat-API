@@ -21,7 +21,7 @@ class RedisClient {
     try {
       return await this.client.set(key, value, { EX: duration });
     } catch (err) {
-        throw err;
+      throw err;
     }
   }
 

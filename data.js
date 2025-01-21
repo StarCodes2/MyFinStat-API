@@ -27,7 +27,8 @@ async function testData() {
       date.setDate(date.getDate() - i);
 
       for (const cate of cates) {
-        let type, amount = null;
+        let type; let
+          amount = null;
         if (cate === 'save') {
           type = 'savings';
           amount = 40000;
@@ -38,7 +39,7 @@ async function testData() {
           type = 'expense';
           amount = 35000;
         }
-    
+
         const tran = new Transaction({
           amount,
           type,

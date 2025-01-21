@@ -9,10 +9,10 @@ const port = process.env.PORT || '5000';
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-//Add the routes defined in index to app
+// Add the routes defined in index to app
 app.use('/', route);
 
-//Add listener to app
+// Add listener to app
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

@@ -1,4 +1,5 @@
-// Defines a class that holds all the methods needed to handle all report formatting and calculations
+// Defines a class that holds all the methods needed to
+// handle all report formatting and calculations
 
 class ReportTools {
   static dayRange(date, weekStart) {
@@ -17,14 +18,14 @@ class ReportTools {
 
     return {
       startDate,
-      currentDate: date
+      currentDate: date,
     };
   }
 
-  static monthRange(date, yearStart) {	
+  static monthRange(date, yearStart) {
     // Returns the timestamp for the first month of the year
     // or for the same month in the previous year
-    if (!date instanceof Date || typeof yearStart !== 'boolean') {
+    if (!(date instanceof Date) || typeof yearStart !== 'boolean') {
       return null;
     }
 
@@ -39,7 +40,7 @@ class ReportTools {
 
   static yearRange(date, numOfYears) {
     // Returns the timestamp for the first and last year in a range
-    if (!date instanceof Date || typeof numOfYears !== 'number') {
+    if (!(date instanceof Date) || typeof numOfYears !== 'number') {
       return null;
     }
 
@@ -58,56 +59,65 @@ class ReportTools {
       const reports = [];
       let i = 0;
       while (i < result.length) {
-        const type = result[i]._id.type;
+        const { type } = result[i]._id;
         const trans = { [type]: result[i] };
         const report = {};
         let date = null;
 
         // Checks if other types have reports for this date
         if (result.length > i + 1 && trans[type]._id.date === result[i + 1]._id.date) {
-	  trans[result[i + 1]._id.type] = result[i + 1];
-	}
+          trans[result[i + 1]._id.type] = result[i + 1];
+        }
         if (result.length > i + 2 && trans[type]._id.date === result[i + 2]._id.date) {
-	  trans[result[i + 2]._id.type] = result[i + 2];
-	}
+          trans[result[i + 2]._id.type] = result[i + 2];
+        }
 
         // Compute and format the report for a date
         if ('expense' in trans) {
-	  report['totalExpense'] = trans['expense'].total;
-          report['averageExpense'] = trans['expense'].avg;
-	  report['mostExpensive'] = trans['expense'].max;
-	  report['leastExpensive'] = trans['expense'].min;
-	  date = trans['expense'].minDate;
-	} else {
-	  report['totalExpense'] = report['averageExpense'] = report['mostExpensive'] = report['leastExpensive'] = 0;
-	}
+          report.totalExpense = trans.expense.total;
+          report.averageExpense = trans.expense.avg;
+          report.mostExpensive = trans.expense.max;
+          report.leastExpensive = trans.expense.min;
+          date = trans.expense.minDate;
+        } else {
+          report.totalExpense = 0;
+          report.averageExpense = 0;
+          report.mostExpensive = 0;
+          report.leastExpensive = 0;
+        }
 
         if ('income' in trans) {
-	  report['totalIncome'] = trans['income'].total;
-          report['averageIncome'] = trans['income'].avg;
-	  report['highestIncome'] = trans['income'].max;
-	  report['lowestIncome'] = trans['income'].min;
-	  date = trans['income'].minDate;
-	} else {
-	  report['totalIncome'] = report['averageIncome'] = report['highestIncome'] = report['lowestIncome'] = 0;
-	}
+          report.totalIncome = trans.income.total;
+          report.averageIncome = trans.income.avg;
+          report.highestIncome = trans.income.max;
+          report.lowestIncome = trans.income.min;
+          date = trans.income.minDate;
+        } else {
+          report.totalIncome = 0;
+          report.averageIncome = 0;
+          report.highestIncome = 0;
+          report.lowestIncome = 0;
+        }
 
         if ('savings' in trans) {
-	  report['totalSavings'] = trans['savings'].total;
-          report['averageSavings'] = trans['savings'].avg;
-	  report['mostSaved'] = trans['savings'].max;
-	  report['leastSaved'] = trans['savings'].min;
-	  date = trans['savings'].minDate;
-	} else {
-	  report['totalSavings'] = report['averageSavings'] = report['mostSaved'] = report['leastSaved'] = 0;
-	}
+          report.totalSavings = trans.savings.total;
+          report.averageSavings = trans.savings.avg;
+          report.mostSaved = trans.savings.max;
+          report.leastSaved = trans.savings.min;
+          date = trans.savings.minDate;
+        } else {
+          report.totalSavings = 0;
+          report.averageSavings = 0;
+          report.mostSaved = 0;
+          report.leastSaved = 0;
+        }
 
-        let percent = (report['totalExpense'] / report['totalIncome']) * 100;
-        report['incomeSpent'] = `${percent}%`;
-        percent = (report['totalSavings'] / report['totalIncome']) * 100;
-        report['incomeSaved'] = `${percent}%`;
-        report['netIncome'] = report['totalIncome'] - report['totalExpense'];
-        report['date'] = date
+        let percent = (report.totalExpense / report.totalIncome) * 100;
+        report.incomeSpent = `${percent}%`;
+        percent = (report.totalSavings / report.totalIncome) * 100;
+        report.incomeSaved = `${percent}%`;
+        report.netIncome = report.totalIncome - report.totalExpense;
+        report.date = date;
 
         reports.push(report);
         // To skip the array elements that where check in this iteration

@@ -10,10 +10,14 @@ class MongooseConnect {
     const database = process.env.DATABASE || 'my_fin_stat';
     this.url = `mongodb://${host}:${port}/${database}`;
 
+    this.User = User;
+    this.Cate = Category;
+    this.Tran = Transaction;
+
     this.connect();
   }
 
-  async connect() {  
+  async connect() {
     try {
       this.connection = await mongoose.connect(this.url);
     } catch (err) {
@@ -22,43 +26,49 @@ class MongooseConnect {
   }
 
   isConnected() {
-    return mongoose.connection.readyState === 1;
+    return this.connection && this.connection.readyState === 1;
   }
 
   async findUser(filter) {
-    return await User.findOne(filter);
+    const res = await this.User.findOne(filter);
+    return res;
   }
 
   async getCatesByUserId(userId) {
-    return await Category.find({ userId });
+    const res = await this.Cate.find({ userId });
+    return res;
   }
 
   async getCateById(userId, id) {
-    return await Category.findOne({ _id: id, userId });
+    const res = await this.Cate.findOne({ _id: id, userId });
+    return res;
   }
 
   async getCateByName(userId, name) {
-    return await Category.findOne({ userId, name });
+    const res = await this.Cate.findOne({ userId, name });
+    return res;
   }
 
   async deleteCate(userId, id) {
-    return await Category.deleteOne({ _id: id, userId });
+    const res = await this.Cate.deleteOne({ _id: id, userId });
+    return res;
   }
 
   async updateCate(userId, id, name) {
-    return await Category.updateOne({ _id: id, userId }, { name });
+    const res = await this.Cate.updateOne({ _id: id, userId }, { name });
+    return res;
   }
 
   async getTransByUserId(userId, skip, limit) {
-    return await Transaction.aggregate([
+    const res = await this.Tran.aggregate([
       { $match: { userId } },
       {
         $lookup: {
-	  from: 'categories',
-	  localField: 'cateId',
-	  foreignField: '_id',
-	  as: 'category',
-	},
+          from: 'categories',
+          localField: 'cateId',
+          foreignField: '_id',
+          as: 'category',
+        },
       },
       { $skip: skip },
       { $limit: limit },
@@ -70,45 +80,51 @@ class MongooseConnect {
           'category.name': 1,
           type: 1,
           repeat: 1,
-          jobKey,
+          jobKey: 1,
           date: 1,
         },
-      }
+      },
     ]);
+    return res;
   }
 
   async getTranById(userId, id) {
-    return await Transaction.findOne({ _id: id, userId }).populate('cateId');
+    const res = await this.Tran.findOne({ _id: id, userId }).populate('cateId');
+    return res;
   }
 
   async deleteTran(userId, id) {
-    return await Transaction.deleteOne({ _id: id, userId });
+    const res = await this.Tran.deleteOne({ _id: id, userId });
+    return res;
   }
 
   async updateTran(filter, values) {
     const { id, userId } = filter;
 
-    return await Transaction.updateOne(
+    const res = await this.Tran.updateOne(
       { _id: id, userId },
-      values
+      values,
     );
+    return res;
   }
 
   async tranAggregate(steps) {
+    let res = null;
     if ('addField' in steps) {
-      return await Transaction.aggregate([
+      res = await this.Tran.aggregate([
         { $match: steps.match },
         { $addFields: steps.addField },
         { $group: steps.group },
-        { $sort: { minDate: -1 } }
+        { $sort: { minDate: -1 } },
       ]);
     } else {
-      return await Transaction.aggregate([
+      res = await this.Tran.aggregate([
         { $match: steps.match },
         { $group: steps.group },
-        { $sort: { minDate: -1 } }
+        { $sort: { minDate: -1 } },
       ]);
     }
+    return res;
   }
 }
 

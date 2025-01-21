@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const { Schema } = mongoose;
 
 const transactionSchema = new Schema({
@@ -6,7 +7,7 @@ const transactionSchema = new Schema({
   type: {
     type: String,
     enum: ['income', 'expense', 'savings'],
-    require: true
+    require: true,
   },
   repeat: {
     type: String,

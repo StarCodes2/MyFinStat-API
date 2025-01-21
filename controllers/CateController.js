@@ -15,7 +15,7 @@ class CateController {
         return res.status(400).json({ error: 'Category already exist' });
       }
 
-      const cate =  new Category({
+      const cate = new Category({
         name: name.toLowerCase(),
         userId: user._id,
       });

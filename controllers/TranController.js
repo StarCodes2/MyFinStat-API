@@ -9,7 +9,9 @@ class TranController {
     const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
 
-    const { type, amount, category, repeat } = req.body;
+    const {
+      type, amount, category, repeat,
+    } = req.body;
     if (!type || !amount || !category) {
       return res.status(400).json({ error: 'amount, type, and category are required' });
     }
@@ -30,9 +32,9 @@ class TranController {
       if (repeat && Validator.isValidRepeat(repeat)) {
         data.repeat = repeat;
         let cron = null;
-	if (repeat === 'daily') cron = '0 0 * * *';
+        if (repeat === 'daily') cron = '0 0 * * *';
         if (repeat === 'weekly') cron = '0 0 * * 1';
-	if (repeat === 'monthly') cron = '0 0 1 * *';
+        if (repeat === 'monthly') cron = '0 0 1 * *';
         if (repeat === 'yearly') cron = '0 0 1 1 *';
 
         const job = repeatQueue.add(data, { repeat: { cron } });
@@ -55,7 +57,7 @@ class TranController {
     const user = await AuthController.checkConnection(req, res);
     if (!user) return user;
 
-    const page = parseInt(req.query.page) || 0;
+    const page = parseInt(req.query.page, 10) || 0;
     const limit = 50;
     const skip = page * limit;
 
@@ -81,8 +83,10 @@ class TranController {
       return res.status(400).json({ error: 'Invalid transaction id' });
     }
 
-    const { amount, type, category, repeat } = req.body;
-    if (!type && !amount && !categroy) {
+    const {
+      amount, type, category, repeat,
+    } = req.body;
+    if (!type && !amount && !category) {
       return res.status(400).json({ error: 'Fields to be updated missing' });
     }
 
@@ -142,7 +146,7 @@ class TranController {
       }
 
       return res.status(200).json({ status: 'Transaction deleted' });
-    } catch(err) {
+    } catch (err) {
       console.error(err);
       return res.status(500).json({ error: 'Internal Server Error' });
     }

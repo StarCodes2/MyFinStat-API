@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
@@ -12,9 +13,9 @@ const userSchema = new Schema({
   virtuals: {
     fullname: {
       get() {
-        return this.name.first + ' ' + this.name.last;
-      }
-    }
+        return `${this.name.first} ${this.name.last}`;
+      },
+    },
   },
 });
 
