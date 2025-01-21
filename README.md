@@ -4,7 +4,7 @@ MyFinStat is a personal finance tracker API designed to help users manage their 
 
 ## Table of Contents  
 1. [Features](#features)
-2. [Getting Started](#gettting-started)
+2. [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
 3. [Usage](#usage)  
