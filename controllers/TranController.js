@@ -90,8 +90,6 @@ class TranController {
       return res.status(400).json({ error: 'Fields to be updated missing' });
     }
 
-    const filter = { id: tranId, userId: user._id };
-
     if (amount && !Validator.isNumber(amount)) {
       return res.status(400).json({ error: 'Amount not a valid number' });
     }
@@ -110,18 +108,27 @@ class TranController {
 
       if (amount) trans.amount = amount;
       if (type) trans.type = type;
-      if (repeat) trans.repeat = repeat;
 
+      // Change the transactions category
       if (category && category.toLowerCase() !== trans.cateId.name) {
         const cate = await dbClient.getCateByName(user._id, category.toLowerCase());
         if (!cate) return res.status(404).json({ error: 'Invalid Category' });
         trans.cateId = cate._id;
       }
 
-      if (repeat && trans.repeat !== repeat) {
+      // Removes and add a new repeatablt job to the queue
+      if (repeat && repeat !== 'stop' && trans.repeat !== repeat) {
         if (trans.jobKey !== null) await queueClient.removeRepeat(trans.jobKey);
         const job = await queueClient.addRepeat(trans, repeat);
         trans.jobKey = job.opts.repeat.key;
+        trans.repeat = repeat;
+      }
+
+      // Remove the transactions repeatable job
+      if (repeat === 'stop' && trans.jobKey !== null) {
+        await queueClient.removeRepeat(trans.jobKey);
+        trans.jobKey = null;
+        trans.repeat = null;
       }
 
       await trans.save();

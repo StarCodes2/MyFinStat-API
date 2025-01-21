@@ -20,7 +20,7 @@ class Validator {
   }
 
   static isValidRepeat(str) {
-    if (str !== 'daily' && str !== 'weekly'
+    if (str !== 'stop' && str !== 'daily' && str !== 'weekly'
         && str !== 'monthly' && str !== 'quaterly' && str !== 'yearly') {
       return false;
     }
