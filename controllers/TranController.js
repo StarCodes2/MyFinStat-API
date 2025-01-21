@@ -143,6 +143,12 @@ class TranController {
     }
 
     try {
+      const trans = await dbClient.getTranById(user._id, tranId);
+      if (!trans) {
+        return res.status(404).json({ error: 'Transaction not found' });
+      }
+      if (trans.jobKey) await queueClient.removeRepeat(trans.jobKey);
+
       const deleted = dbClient.deleteTran(user._id, tranId);
       if (deleted.deletedCount === 0) {
         return res.status(404).json({ error: 'Transaction not found' });
