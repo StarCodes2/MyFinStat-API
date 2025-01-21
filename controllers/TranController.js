@@ -2,7 +2,7 @@ const AuthController = require('./AuthController');
 const Transaction = require('../models/Transaction');
 const dbClient = require('../utils/db');
 const Validator = require('../utils/Validator');
-const repeatQueue = require('../worker');
+const queueClient = require('../utils/worker');
 
 class TranController {
   static async createTransaction(req, res) {
@@ -12,12 +12,17 @@ class TranController {
     const {
       type, amount, category, repeat,
     } = req.body;
+
     if (!type || !amount || !category) {
       return res.status(400).json({ error: 'amount, type, and category are required' });
     }
-    if (!Validator.isValidType(type)) {
-      res.status(400).json({ error: 'Invalid type' });
+    if (!Validator.isNumber(amount)) {
+      return res.status(400).json({ error: 'Invalid amount' });
     }
+    if (!Validator.isValidType(type)) {
+      return res.status(400).json({ error: 'Invalid type' });
+    }
+
     const data = {
       amount,
       type,
@@ -30,14 +35,9 @@ class TranController {
       data.cateId = cate._id;
 
       if (repeat && Validator.isValidRepeat(repeat)) {
+        // Add a repeatable job to queue
+        const job = await queueClient.addRepeat(data, repeat);
         data.repeat = repeat;
-        let cron = null;
-        if (repeat === 'daily') cron = '0 0 * * *';
-        if (repeat === 'weekly') cron = '0 0 * * 1';
-        if (repeat === 'monthly') cron = '0 0 1 * *';
-        if (repeat === 'yearly') cron = '0 0 1 1 *';
-
-        const job = repeatQueue.add(data, { repeat: { cron } });
         data.jobKey = job.opts.repeat.key;
       } else if (repeat && !Validator.isValidRepeat(repeat)) {
         return res.status(400).json({ error: 'Invalid repeat' });
@@ -90,12 +90,8 @@ class TranController {
       return res.status(400).json({ error: 'Fields to be updated missing' });
     }
 
-    const values = {};
     const filter = { id: tranId, userId: user._id };
 
-    if (amount) values.amount = amount;
-    if (type) values.type = type;
-    if (repeat) values.repeat = repeat;
     if (amount && !Validator.isNumber(amount)) {
       return res.status(400).json({ error: 'Amount not a valid number' });
     }
@@ -112,16 +108,23 @@ class TranController {
         return res.status(404).json({ error: 'Transaction not found' });
       }
 
+      if (amount) trans.amount = amount;
+      if (type) trans.type = type;
+      if (repeat) trans.repeat = repeat;
+
       if (category && category.toLowerCase() !== trans.cateId.name) {
         const cate = await dbClient.getCateByName(user._id, category.toLowerCase());
         if (!cate) return res.status(404).json({ error: 'Invalid Category' });
-        values.cateId = cate._id;
+        trans.cateId = cate._id;
       }
 
-      const updated = await dbClient.updateTran(filter, values);
-      if (updated.modifiedCount < 1) {
-        return res.status(400).json({ error: 'Not Updated' });
+      if (repeat && trans.repeat !== repeat) {
+        if (trans.jobKey !== null) await queueClient.removeRepeat(trans.jobKey);
+        const job = await queueClient.addRepeat(trans, repeat);
+        trans.jobKey = job.opts.repeat.key;
       }
+
+      await trans.save();
 
       return res.status(200).json({ id: tranId, status: 'Updated' });
     } catch (err) {
