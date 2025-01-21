@@ -1,13 +1,13 @@
 {
   "name": "MyFinStat_API",
   "version": "1.0.0",
-  "description": "",
+  "description": "MyFinStat is a personal finance tracker API designed to help users manage their income, expenses, and budgets efficiently. With powerful tools for transaction tracking and insightful reports, it simplifies financial management for everyone.",
   "main": "app.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint",
     "check-lint": "lint [0-9]*.js",
     "start-server": "nodemon --exec babel-node --presets @babel/preset-env ./app.js",
-    "start-worker": "nodemon --exec babel-node --presets @babel/preset-env ./worker.js",
+    "start-worker": "nodemon --exec babel-node --presets @babel/preset-env ./utils/worker.js",
     "dev": "nodemon --exec babel-node --presets @babel/preset-env",
     "test": "./node_modules/.bin/mocha --require @babel/register --exit",
     "test-lint": "eslint ./test"
