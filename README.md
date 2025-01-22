@@ -183,17 +183,36 @@ http://localhost:5000
 4. **Login**  
    - **Endpoint**: `/connect`  
    - **Method**: GET  
-   - **Description**: Authenticates the user and provides a session token.  
+   - **Description**: Authenticates the user and provides a session token.
+   - **Example**:  
+     ```bash
+     echo -n 'user@example.com:securepassword' | base64
+     dXNlckBleGFtcGxlLmNvbTpzZWN1cmVwYXNzd29yZA==
+     curl -X GET http://localhost:5000/connect \
+     -H "auth: Basic dXNlckBleGFtcGxlLmNvbTpzZWN1cmVwYXNzd29yZA==" ; echo ""
+      {token: YOUR-SESSION-TOKEN}
+     ```
+     Convert email:password to a base64 encoded string and use it get a session token.
 
 5. **Logout**  
    - **Endpoint**: `/disconnect`  
    - **Method**: GET  
    - **Description**: Logs out the current user.  
+   - **Example**:  
+     ```bash
+     curl -X GET http://localhost:5000/disconnect \
+     -H "Auth-Token: YOUR-SESSION-TOKEN"
+     ```  
 
 6. **Get Current User**  
    - **Endpoint**: `/me`  
    - **Method**: GET  
    - **Description**: Retrieves the details of the currently authenticated user.  
+   - **Example**:  
+     ```bash
+     curl -X GET http://localhost:5000/me \
+     -H "Auth-Token: YOUR-SESSION-TOKEN"
+     ```  
 
 ---
 
@@ -213,7 +232,7 @@ http://localhost:5000
      ```bash
      curl -X POST http://localhost:5000/category \
        -H "Content-Type: application/json" \
-       -H "auth-token: Basic YOUR-TOKEN" \
+       -H "Auth-Token: YOUR-SESSION-TOKEN" \
        -d '{"name":"Groceries"}'
      ```  
 
@@ -224,7 +243,7 @@ http://localhost:5000
    - **Example**:  
      ```bash
      curl -X GET http://localhost:5000/category \
-     -H "auth-token: Basic YOUR-TOKEN"
+     -H "Auth-Token: YOUR-SESSION-TOKEN"
      ```  
 
 9. **Update Category**  
@@ -241,7 +260,7 @@ http://localhost:5000
      ```bash
      curl -X PUT http://localhost:5000/category/<cateId> \
        -H "Content-Type: application/json" \
-       -H "auth-token: Basic YOUR-TOKEN" \
+       -H "Auth-Token: YOUR-SESSION-TOKEN" \
        -d '{"name":"New Category Name"}'
      ```  
 
@@ -252,7 +271,7 @@ http://localhost:5000
     - **Example**:  
       ```bash
       curl -X DELETE http://localhost:5000/category/<cateId> \
-      -H "auth-token: Basic YOUR-TOKEN"
+      -H "Auth-Token: YOUR-SESSION-TOKEN"
       ```  
 
 ---
@@ -276,7 +295,7 @@ http://localhost:5000
       ```bash
       curl -X POST http://localhost:5000/transaction \
         -H "Content-Type: application/json" \
-        -H "auth-token: Basic YOUR-TOKEN" \
+        -H "Auth-Token: YOUR-SESSION-TOKEN" \
         -d '{"category":"Groceries","amount":120,"repeat":"weekly","type":"expense"}'
       ```  
 
@@ -287,7 +306,7 @@ http://localhost:5000
     - **Example**:  
       ```bash
       curl -X GET http://localhost:5000/transaction?page=1 \
-      -H "auth-token: Basic YOUR-TOKEN"
+      -H "Auth-Token: YOUR-SESSION-TOKEN"
       ```  
 
 13. **Update Transaction**  
@@ -300,14 +319,14 @@ http://localhost:5000
         "amount": 120,
         "type": "income, expense, or savings",
         "category": "rent",
-        "repeat": "daily, weekly, monthly, or yearly"
+        "repeat": "stop, daily, weekly, monthly, or yearly"
       }
       ```  
     - **Example**:  
       ```bash
       curl -X PUT http://localhost:5000/transaction/<tranId> \
         -H "Content-Type: application/json" \
-        -H "auth-token: Basic YOUR-TOKEN" \
+        -H "Auth-Token: YOUR-SESSION-TOKEN" \
         -d '{"amount":120}'
       ```  
 
@@ -318,7 +337,7 @@ http://localhost:5000
     - **Example**:  
       ```bash
       curl -X DELETE http://localhost:5000/transaction/<tranId> \
-      -H "auth-token: Basic YOUR-TOKEN"
+      -H "Auth-Token: YOUR-SESSION-TOKEN"
       ```  
 
 ---
@@ -332,7 +351,7 @@ http://localhost:5000
     - **Example**:  
       ```bash
       curl -X GET http://localhost:5000/report \
-      -H "auth-token: Basic YOUR-TOKEN"
+      -H "Auth-Token: YOUR-SESSION-TOKEN"
       ```
 
 16. **Generate Time-Based Report**  
@@ -347,6 +366,7 @@ http://localhost:5000
     - **Example**:
       ```bash
       curl -X GET http://localhost:5000/report/monthly
+      -H "Auth-Token: YOUR-SESSION-TOKEN"
       ```  
 
 ---
