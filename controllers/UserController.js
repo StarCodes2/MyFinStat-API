@@ -49,7 +49,7 @@ class UserController {
     }
 
     // Range beginning of the current year till present date
-    const dateRange = ReportTools.monthRange(new Date, true);
+    const dateRange = ReportTools.monthRange(new Date(), true);
     const match = {
       userId: user._id,
       date: {
@@ -76,7 +76,7 @@ class UserController {
         group,
       });
 
-      let report = [`No reports available for dateRange.startDate.getFullYear()!`];
+      let report = [`No reports available for ${dateRange.startDate.getFullYear()}!`];
       if (result.length !== 0) {
         report = ReportTools.computeReport(result);
       }

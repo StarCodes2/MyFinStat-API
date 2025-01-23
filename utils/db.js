@@ -84,6 +84,7 @@ class MongooseConnect {
           date: 1,
         },
       },
+      { $sort: { date: -1 } },
     ]);
     return res;
   }

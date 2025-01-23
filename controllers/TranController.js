@@ -58,7 +58,7 @@ class TranController {
     if (!user) return user;
 
     const page = parseInt(req.query.page, 10) || 0;
-    const limit = 50;
+    const limit = 20;
     const skip = page * limit;
 
     try {
@@ -86,7 +86,7 @@ class TranController {
     const {
       amount, type, category, repeat,
     } = req.body;
-    if (!type && !amount && !category) {
+    if (!type && !amount && !category && !repeat) {
       return res.status(400).json({ error: 'Fields to be updated missing' });
     }
 
