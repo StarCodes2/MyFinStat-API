@@ -2,6 +2,7 @@ const sha1 = require('sha1');
 const User = require('../models/User');
 const Category = require('../models/Category');
 const dbClient = require('../utils/db');
+const ReportTools = require('../utils/ReportTools');
 const AuthController = require('./AuthController');
 
 class UserController {
@@ -47,11 +48,49 @@ class UserController {
       return user;
     }
 
-    return res.status(201).json({
-      id: user._id,
-      name: user.fullname,
-      email: user.email,
-    });
+    // Range beginning of the current year till present date
+    const dateRange = ReportTools.monthRange(new Date, true);
+    const match = {
+      userId: user._id,
+      date: {
+        $gte: dateRange.startDate,
+        $lt: dateRange.currentDate,
+      },
+    };
+
+    const group = {
+      _id: {
+        date: { $substr: [{ $year: '$date' }, 0, 4] },
+        type: '$type',
+      },
+      count: { $sum: 1 },
+      total: { $sum: '$amount' },
+      avg: { $avg: '$amount' },
+      max: { $max: '$amount' },
+      minDate: { $min: '$date' },
+    };
+
+    try {
+      const result = await dbClient.tranAggregate({
+        match,
+        group,
+      });
+
+      let report = [`No reports available for dateRange.startDate.getFullYear()!`];
+      if (result.length !== 0) {
+        report = ReportTools.computeReport(result);
+      }
+
+      return res.status(201).json({
+        id: user._id,
+        name: user.fullname,
+        email: user.email,
+        report: report[0],
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
 }
 
