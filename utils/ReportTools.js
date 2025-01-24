@@ -112,9 +112,16 @@ class ReportTools {
           report.leastSaved = 0;
         }
 
-        let percent = (report.totalExpense / report.totalIncome) * 100;
+        let percent = 0;
+        if (report.totalExpense !== 0 && report.totalIncome !== 0) {
+          percent = (report.totalExpense / report.totalIncome) * 100;
+        }
         report.incomeSpent = `${percent}%`;
-        percent = (report.totalSavings / report.totalIncome) * 100;
+
+        percent = 0;
+        if (report.totalSavings !== 0 && report.totalIncome !== 0) {
+          percent = (report.totalSavings / report.totalIncome) * 100;
+        }
         report.incomeSaved = `${percent}%`;
         report.netIncome = report.totalIncome - report.totalExpense;
         report.date = date;
