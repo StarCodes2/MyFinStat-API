@@ -4,8 +4,9 @@ const Transaction = require('./models/Transaction');
 const dbClient = require('./utils/db');
 
 async function testData() {
-  const user = await User.findOne();
+  const user = await User.findOne({ _id: '6761e2d663e406b897cf7b01' });
   if (user) {
+    console.log('start');
     const cates = ['rent', 'salary', 'food', 'cloth', 'save'];
     const cateIds = {};
     for (const cate of cates) {
@@ -43,6 +44,7 @@ async function testData() {
         const tran = new Transaction({
           amount,
           type,
+          repeat: null,
           cateId: cateIds[cate],
           userId: user._id,
           date: new Date(date),

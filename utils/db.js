@@ -19,7 +19,8 @@ class MongooseConnect {
 
   async connect() {
     try {
-      this.connection = await mongoose.connect(this.url);
+      await mongoose.connect(this.url);
+      this.connection = mongoose.connection;
     } catch (err) {
       console.error(`Error: ${err.message}`);
     }
